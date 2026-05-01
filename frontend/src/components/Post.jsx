@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import { Dialog, DialogContent, DialogTrigger } from './ui/dialog'
-import { Bookmark, MessageCircle, MoreHorizontal, Send, UserStar } from 'lucide-react'
+import { Bookmark, MessageCircle, MoreHorizontal, Send, User } from 'lucide-react'
 import { Button } from './ui/button'
 import { FaHeart, FaRegHeart } from 'react-icons/fa'
 import CommentDialog from './CommentDialog'
@@ -17,13 +17,13 @@ const Post = ({ post }) => {
     const [open, setOpen] = useState(false);
     const { user } = useSelector(store => store.auth);
     const { posts } = useSelector(store => store.post);
-    const [liked, setLiked] = useState(post.likes.includes(user?._id) || false);
-    const [postLike, setPostLike] = useState(post.likes.length);
-    const [comment, setComment] = useState(post.comments);
+    const [liked, setLiked] = useState(post.likes?.includes(user?._id) || false);
+    const [postLike, setPostLike] = useState(post.likes?.length || 0);
+    const [comment, setComment] = useState(post.comments || []);
 
     const dispatch = useDispatch();
 
-    const isBookmarked = user?.bookmarks.includes(post?._id);
+    const isBookmarked = user?.bookmarks?.includes(post?._id);
 
     const bookmarkHandler = async () => {
         try {
@@ -105,12 +105,12 @@ const Post = ({ post }) => {
         }
     }
     return (
-        <div className='my-8 w-full max-w-sm mx-auto'>
+        <div className='my-8 w-full max-w-lg mx-auto'>
             <div className='flex items-center justify-between'>
                 <div className="flex items-center gap-2">
                     <Avatar>
                         <AvatarImage src={post.author?.profilePicture} alt="Post_image" />
-                        <AvatarFallback>CN</AvatarFallback>
+                        <AvatarFallback><User className="w-5 h-5 text-gray-500" /></AvatarFallback>
                     </Avatar>
                     <div className='flex items-center gap-3'>
                         <h1>{post.author?.username}</h1>
@@ -121,11 +121,11 @@ const Post = ({ post }) => {
                     <DialogTrigger asChild>
                         <MoreHorizontal className='cursor-pointer' />
                     </DialogTrigger>
-                    <DialogContent className='flex flex-col items-center text-sm text-center  bg-white'>
-                        <Button variant='ghost' className='cursor-pointer w-fit text-[#ED4956] font-bold hover:bg-gray-200'  >Unfollow</Button>
-                        <Button variant='ghost' className='cursor-pointer w-fit  hover:bg-gray-200'>Add to collections</Button>
+                    <DialogContent className='flex flex-col items-center text-sm text-center  bg-white dark:bg-neutral-900'>
+                        <Button variant='ghost' className='cursor-pointer w-fit text-[#ED4956] font-bold hover:bg-gray-200 hover:text-slate-900 dark:hover:text-black'  >Unfollow</Button>
+                        <Button variant='ghost' className='cursor-pointer w-fit  hover:bg-gray-200 hover:text-slate-900 dark:hover:text-black'>Add to collections</Button>
                         {
-                            user && user?._id === post?.author._id && <Button onClick={deletePostHandler} variant='ghost' className='cursor-pointer w-fit  hover:bg-gray-200'>Delete</Button>
+                            user && user?._id === post?.author._id && <Button onClick={deletePostHandler} variant='ghost' className='cursor-pointer w-fit  hover:bg-gray-200 hover:text-slate-900 dark:hover:text-black'>Delete</Button>
                         }
                     </DialogContent>
                 </Dialog>

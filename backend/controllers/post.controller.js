@@ -3,25 +3,41 @@ import cloudinary from "../utils/cloudinary.js";
 import { User } from "../models/user.model.js";
 import { Post } from "../models/post.model.js";
 import { Comment } from "../models/comment.model.js";
+import { Notification } from "../models/notification.model.js";
+import { getReceiverSocketId, io } from "../socket/socket.js";
 
 export const addNewPost = async (req, res) => {
     try {
         const { caption } = req.body;
         const image = req.file;
         const authorId = req.id;
-        if (!image) return res.status(400).json({ message: "Image required" });
+        if (!image) return res.status(400).json({ message: "Image/Video required" });
 
-        const optimizedImageBuffer = await sharp(image.buffer)
-            .resize({ width: 800, height: 800, fit: 'inside' })
-            .toFormat('jpeg', { quality: 80 })
-            .toBuffer();
+        const isVideo = image.mimetype.startsWith('video/');
+        let cloudResponse;
 
-        const fileUri = `data:image/jpeg;base64,${optimizedImageBuffer.toString('base64')}`;
-        const cloudResponse = await cloudinary.uploader.upload(fileUri);
+        if (isVideo) {
+            // Upload video directly to Cloudinary
+            const fileUri = `data:${image.mimetype};base64,${image.buffer.toString('base64')}`;
+            cloudResponse = await cloudinary.uploader.upload(fileUri, {
+                resource_type: 'video'
+            });
+        } else {
+            // Process and upload image
+            const optimizedImageBuffer = await sharp(image.buffer)
+                .resize({ width: 800, height: 800, fit: 'inside' })
+                .toFormat('jpeg', { quality: 80 })
+                .toBuffer();
+
+            const fileUri = `data:image/jpeg;base64,${optimizedImageBuffer.toString('base64')}`;
+            cloudResponse = await cloudinary.uploader.upload(fileUri);
+        }
+
         const post = await Post.create({
             caption,
             image: cloudResponse.secure_url,
-            author: authorId
+            author: authorId,
+            mediaType: isVideo ? 'video' : 'image'
         });
         const user = await User.findById(authorId);
         if (user) {
@@ -91,6 +107,31 @@ export const likePost = async (req, res) => {
         });
         await post.updateOne({ $addToSet: { likes: likeKrneWalaUserKiId } });
         await post.save();
+
+        // implement socket io for real time notification
+        const user = await User.findById(likeKrneWalaUserKiId);
+        const postOwnerId = post.author.toString();
+        if (postOwnerId !== likeKrneWalaUserKiId) {
+            // emit a notification event
+            const notification = {
+                type: 'like',
+                userId: likeKrneWalaUserKiId,
+                userDetails: user,
+                postId,
+                message: 'Your post was liked'
+            }
+            const postOwnerSocketId = getReceiverSocketId(postOwnerId);
+            io.to(postOwnerSocketId).emit('notification', notification);
+
+            // save notification to DB
+            await Notification.create({
+                recipient: postOwnerId,
+                sender: likeKrneWalaUserKiId,
+                type: 'like',
+                post: postId
+            });
+        }
+
         return res.status(200).json({
             message: "Post liked",
             success: true,
@@ -139,6 +180,30 @@ export const addComment = async (req, res) => {
         })
         post.comments.push(comment._id);
         await post.save();
+
+        // implement socket io for real time notification
+        const user = await User.findById(commenting_user);
+        const postOwnerId = post.author.toString();
+        if (postOwnerId !== commenting_user) {
+            // emit a notification event
+            const notification = {
+                type: 'comment',
+                userId: commenting_user,
+                userDetails: user,
+                postId,
+                message: 'Your post was commented on'
+            }
+            const postOwnerSocketId = getReceiverSocketId(postOwnerId);
+            io.to(postOwnerSocketId).emit('notification', notification);
+
+            // save notification to DB
+            await Notification.create({
+                recipient: postOwnerId,
+                sender: commenting_user,
+                type: 'comment',
+                post: postId
+            });
+        }
 
         return res.status(200).json({
             message: "Comment added",
@@ -258,5 +323,29 @@ export const getExplorePosts = async (req, res) => {
         });
     } catch (error) {
         console.log(error);
+    }
+};
+
+export const getScrolls = async (req, res) => {
+    try {
+        const scrolls = await Post.find({ mediaType: 'video' })
+            .sort({ createdAt: -1 })
+            .populate({ path: 'author', select: 'username profilePicture' })
+            .populate({
+                path: 'comments',
+                sort: { createdAt: -1 },
+                populate: {
+                    path: 'author',
+                    select: 'username profilePicture'
+                }
+            });
+
+        return res.status(200).json({
+            scrolls,
+            success: true
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Server error', success: false });
     }
 };

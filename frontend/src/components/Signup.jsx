@@ -50,7 +50,7 @@ const Signup = () => {
         <div className="flex items-center w-screen h-screen justify-center">
             <form onSubmit={signupHandler} className="shadow-lg flex flex-col gap-5 p-8">
                 <div className="my-4">
-                    <h1 className="text-center font-bold text-xl">LOGO</h1>
+                    <h1 className="text-center font-bold text-xl">Flik</h1>
                     <p className="text-sm text-center">Signup to see the post from your socials</p>
                 </div>
                 <div>
@@ -75,7 +75,6 @@ const Signup = () => {
                         <Button type="submit">Signup</Button>
                     )
                 }
-                <Button>Signup</Button>
                 <span className="text-center">Already have an acount? <Link to="/login" className="text-blue-500">Login</Link> </span>
             </form>
 

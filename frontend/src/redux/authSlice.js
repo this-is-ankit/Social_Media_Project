@@ -18,19 +18,21 @@ const authSlice = createSlice({
     },
     updateFollowing: (state, action) => {
         const userId = action.payload;
-        if (state.user.following.includes(userId)) {
+        if (state.user?.following?.includes(userId)) {
             // unfollow
             state.user.following = state.user.following.filter((id) => id !== userId);
-        } else {
+        } else if (state.user) {
             // follow
+            if (!state.user.following) state.user.following = [];
             state.user.following.push(userId);
         }
     },
     updateBookmarks: (state, action) => {
         const postId = action.payload;
-        if (state.user.bookmarks.includes(postId)) {
+        if (state.user?.bookmarks?.includes(postId)) {
             state.user.bookmarks = state.user.bookmarks.filter((id) => id !== postId);
-        } else {
+        } else if (state.user) {
+            if (!state.user.bookmarks) state.user.bookmarks = [];
             state.user.bookmarks.push(postId);
         }
     }

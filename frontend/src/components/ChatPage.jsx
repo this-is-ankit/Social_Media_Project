@@ -4,7 +4,7 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { setSelectedUser, pushMessage } from '@/redux/chatSlice';
 import { Input } from './ui/input';
 import { Button } from './ui/button';
-import { MessageCircle } from 'lucide-react';
+import { MessageCircle, User } from 'lucide-react';
 import Messages from './Messages';
 import axios from 'axios';
 
@@ -38,19 +38,19 @@ const ChatPage = () => {
     }, [dispatch]);
 
     return (
-        <div className='flex ml-[16%] h-screen'>
+        <div className='flex h-screen'>
             <section className='w-full md:w-1/4 my-8'>
                 <h1 className='font-bold mb-4 px-3 text-xl'>{user?.username}</h1>
                 <hr className='mb-4 border-gray-300' />
                 <div className='overflow-y-auto h-[80vh]'>
                     {
                         suggestedUsers.map((suggestedUser) => {
-                            const isOnline = onlineUsers.includes(suggestedUser?._id);
+                            const isOnline = onlineUsers?.includes(suggestedUser?._id);
                             return (
-                                <div key={suggestedUser?._id} onClick={() => dispatch(setSelectedUser(suggestedUser))} className='flex gap-3 items-center p-3 hover:bg-gray-50 cursor-pointer'>
+                                <div key={suggestedUser?._id} onClick={() => dispatch(setSelectedUser(suggestedUser))} className='flex gap-3 items-center p-3 hover:bg-gray-50 hover:text-slate-900 dark:hover:text-black cursor-pointer'>
                                     <Avatar className='w-14 h-14'>
                                         <AvatarImage src={suggestedUser?.profilePicture} />
-                                        <AvatarFallback>CN</AvatarFallback>
+                                        <AvatarFallback><User className="w-5 h-5 text-gray-500" /></AvatarFallback>
                                     </Avatar>
                                     <div className='flex flex-col'>
                                         <span className='font-medium'>{suggestedUser?.username}</span>
@@ -69,7 +69,7 @@ const ChatPage = () => {
                         <div className='flex gap-3 items-center px-3 py-2 border-b border-gray-300 sticky top-0 bg-white z-10'>
                             <Avatar>
                                 <AvatarImage src={selectedUser?.profilePicture} alt='profile' />
-                                <AvatarFallback>CN</AvatarFallback>
+                                <AvatarFallback><User className="w-5 h-5 text-gray-500" /></AvatarFallback>
                             </Avatar>
                             <div className='flex flex-col'>
                                 <span>{selectedUser?.username}</span>

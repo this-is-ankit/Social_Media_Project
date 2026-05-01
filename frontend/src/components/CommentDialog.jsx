@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogTrigger } from './ui/dialog'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import { Link } from 'react-router-dom'
 import { Button } from './ui/button'
-import { MoreHorizontal } from 'lucide-react'
+import { MoreHorizontal, User } from 'lucide-react'
 import { useDispatch, useSelector } from 'react-redux'
 import Comment from './Comment'
 import axios from 'axios'
@@ -66,7 +66,7 @@ const CommentDialog = ({ open, setOpen }) => {
                 <Link>
                   <Avatar>
                     <AvatarImage src={selectedPost?.author?.profilePicture} />
-                    <AvatarFallback>CN</AvatarFallback>
+                    <AvatarFallback><User className="w-5 h-5 text-gray-500" /></AvatarFallback>
                   </Avatar>
                 </Link>
                 <Link className='font-semibold text-xs'>{selectedPost?.author?.username}</Link>

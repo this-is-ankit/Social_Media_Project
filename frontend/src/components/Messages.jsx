@@ -4,6 +4,7 @@ import { Button } from './ui/button'
 import { Link } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import useGetMessages from '@/Hooks/useGetMessages'
+import { User } from 'lucide-react'
 
 const Messages = ({ selectedUser }) => {
     useGetMessages();
@@ -15,7 +16,7 @@ const Messages = ({ selectedUser }) => {
                 <div className='flex flex-col items-center justify-center'>
                     <Avatar className="h-20 w-20">
                         <AvatarImage src={selectedUser?.profilePicture} alt='profile' />
-                        <AvatarFallback>CN</AvatarFallback>
+                        <AvatarFallback><User className="w-5 h-5 text-gray-500" /></AvatarFallback>
                     </Avatar>
                     <span>{selectedUser?.username}</span>
                     <Link to={`/profile/${selectedUser?._id}`}><Button className="h-8 my-2" variant="secondary">View profile</Button></Link>

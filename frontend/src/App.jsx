@@ -8,6 +8,8 @@ import MainLayout from "./components/MainLayout"
 import Profile from "./components/Profile"
 import ChatPage from "./components/ChatPage"
 import Explore from "./components/Explore"
+import Search from "./components/Search"
+import Scrolls from "./components/Scrolls"
 import useGetSocket from "./Hooks/useGetSocket"
 
 const browserRouter = createBrowserRouter([
@@ -26,13 +28,22 @@ const browserRouter = createBrowserRouter([
       {
         path: '/explore',
         element: <Explore />
-      }
+      },
+      {
+        path: '/search',
+        element: <Search />
+      },
+      {
+        path: '/scrolls',
+        element: <Scrolls />
+      },
+      {
+        path: "/profile/:id",
+        element: <Profile />
+      },
     ],
   },
   {
-    path: "/profile/:id",
-    element: <Profile />
-  },  {
     path: "/login",
     element: <Login />
   },

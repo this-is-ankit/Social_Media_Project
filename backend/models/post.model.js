@@ -12,6 +12,11 @@ const postSchema = new mongoose.Schema({
         type : mongoose.Schema.Types.ObjectId, ref : 'User',
         require : true,
     },
+    mediaType: { 
+        type: String, 
+        enum: ['image', 'video'], 
+        default: 'image' 
+    },
     likes : [{type : mongoose.Schema.Types.ObjectId , ref : 'User'}],
     comments : [{type : mongoose.Schema.Types.ObjectId , ref : 'Comment'}],
 });

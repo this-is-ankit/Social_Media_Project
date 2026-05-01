@@ -4,6 +4,8 @@ import jwt from 'jsonwebtoken';
 import getDataUri from "../utils/datauri.js";
 import cloudinary from "../utils/cloudinary.js";
 import { Post } from "../models/post.model.js";
+import { Notification } from "../models/notification.model.js";
+import { getReceiverSocketId, io } from "../socket/socket.js";
 export const register = async (req, res) => {
     try {
         const { username, email, password } = req.body;
@@ -101,7 +103,7 @@ export const logout = async (_req, res) => {
 export const getProfile = async (req, res) => {
     try {
         const userId = req.params.id;
-        let user = await User.findById(userId).populate({path:'posts', createdAt:-1}).populate('bookmarks').select('-password');
+        let user = await User.findById(userId).populate({ path: 'posts', options: { sort: { createdAt: -1 } } }).populate('bookmarks').select('-password');
         return res.status(200).json({
             user,
             success: true
@@ -144,10 +146,17 @@ export const editProfile = async (req, res) => {
 }
 export const getSuggestedUsers = async (req, res) => {
     try {
-        const suggestedUsers = await User.find({ _id: { $ne: req.id } }).select("-password");
-        if (!suggestedUsers) {
-            return res.status(400).json({
-                message: "Currently do not have any users to suggest"
+        const loggedInUser = await User.findById(req.id);
+        const following = loggedInUser.following || [];
+
+        const suggestedUsers = await User.find({
+            _id: { $ne: req.id, $nin: following }
+        }).select("-password").limit(6);
+
+        if (!suggestedUsers || suggestedUsers.length === 0) {
+            return res.status(200).json({
+                success: true,
+                users: []
             });
         };
         return res.status(200).json({
@@ -157,6 +166,7 @@ export const getSuggestedUsers = async (req, res) => {
     }
     catch (error) {
         console.log(error);
+        return res.status(500).json({ message: "Server error", success: false });
     }
 };
 export const followOrUnfollow = async (req, res) => {
@@ -192,6 +202,25 @@ export const followOrUnfollow = async (req, res) => {
                 User.updateOne({ _id: followKrneWala }, { $push: { following: jiskoFollowKrunga } }),
                 User.updateOne({ _id: jiskoFollowKrunga }, { $push: { followers: followKrneWala } }),
             ])
+
+            // implement socket io for real time notification
+            const user = await User.findById(followKrneWala);
+            const notification = {
+                type: 'follow',
+                userId: followKrneWala,
+                userDetails: user,
+                message: 'followed you'
+            }
+            const receiverSocketId = getReceiverSocketId(jiskoFollowKrunga);
+            io.to(receiverSocketId).emit('notification', notification);
+
+            // save notification to DB
+            await Notification.create({
+                recipient: jiskoFollowKrunga,
+                sender: followKrneWala,
+                type: 'follow'
+            });
+
              return res.status(200).json({
                 message : "Followed successfully",
                 success : true,

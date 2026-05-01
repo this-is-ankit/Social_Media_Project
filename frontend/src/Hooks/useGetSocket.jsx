@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { io } from "socket.io-client";
 import { setOnlineUsers, pushMessage } from "../redux/chatSlice";
+import { setNotifications } from "../redux/notificationSlice";
 
 const useGetSocket = () => {
     const { user } = useSelector(store => store.auth);
@@ -17,6 +18,10 @@ const useGetSocket = () => {
                 transports: ['websocket']
             });
 
+            socket.on('connect_error', (error) => {
+                console.error('Socket connection error:', error);
+            });
+
             socket.on('getOnlineUsers', (onlineUsers) => {
                 dispatch(setOnlineUsers(onlineUsers));
             });
@@ -25,13 +30,12 @@ const useGetSocket = () => {
                 dispatch(pushMessage(newMessage));
             });
 
+            socket.on('notification', (notification) => {
+                dispatch(setNotifications(notification));
+            });
+
             return () => {
                 socket.close();
-            }
-        } else {
-            if (socket) {
-                socket.close();
-                socket = null;
             }
         }
     }, [user, dispatch]);
