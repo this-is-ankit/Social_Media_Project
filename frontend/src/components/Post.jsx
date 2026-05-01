@@ -10,6 +10,7 @@ import { toast } from 'sonner'
 import axios from 'axios'
 import { setPosts, setSelectedPost } from '@/redux/postSlice'
 import { Badge } from './ui/badge'
+import { updateBookmarks } from '@/redux/authSlice'
 
 const Post = ({ post }) => {
     const [text, setText] = useState("");
@@ -18,10 +19,24 @@ const Post = ({ post }) => {
     const { posts } = useSelector(store => store.post);
     const [liked, setLiked] = useState(post.likes.includes(user?._id) || false);
     const [postLike, setPostLike] = useState(post.likes.length);
-    const [comment, setComment] = useState(post.comments)
-
+    const [comment, setComment] = useState(post.comments);
 
     const dispatch = useDispatch();
+
+    const isBookmarked = user?.bookmarks.includes(post?._id);
+
+    const bookmarkHandler = async () => {
+        try {
+            dispatch(updateBookmarks(post?._id));
+            const res = await axios.get(`http://localhost:8000/api/v1/post/${post?._id}/bookmark`, { withCredentials: true });
+            if (res.data.success) {
+                toast.success(res.data.message);
+            }
+        } catch (error) {
+            console.log(error);
+            dispatch(updateBookmarks(post?._id));
+        }
+    }
 
     const changeEventHandler = (e) => {
         const inputText = e.target.value;
@@ -73,8 +88,7 @@ const Post = ({ post }) => {
                 setText("");
             }
         } catch (error) {
-            s
-
+            console.log(error)
         }
     }
     const deletePostHandler = async () => {
@@ -133,7 +147,7 @@ const Post = ({ post }) => {
                     }} className='cursor-pointer hover:text-gray-600' />
                     <Send className='cursor-pointer hover:text-gray-600' />
                 </div>
-                <Bookmark className='cursor-pointer hover:text-gray-600' />
+                <Bookmark onClick={bookmarkHandler} className={`cursor-pointer hover:text-gray-600 ${isBookmarked ? 'fill-black' : ''}`} />
             </div>
             <span className='font-medium block mb-2'>{postLike} likes</span>
             <p>

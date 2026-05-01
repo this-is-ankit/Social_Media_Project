@@ -6,22 +6,34 @@ import Login from "./components/Login"
 import Signup from "./components/Signup"
 import MainLayout from "./components/MainLayout"
 import Profile from "./components/Profile"
+import ChatPage from "./components/ChatPage"
+import Explore from "./components/Explore"
+import useGetSocket from "./Hooks/useGetSocket"
 
 const browserRouter = createBrowserRouter([
   {
     path: "/",
-    element: <MainLayout/>,
-    children: [{
-      path: '/',
-      element: <Home />
-    }],
+    element: <MainLayout />,
+    children: [
+      {
+        path: '/',
+        element: <Home />
+      },
+      {
+        path: '/chat',
+        element: <ChatPage />
+      },
+      {
+        path: '/explore',
+        element: <Explore />
+      }
+    ],
   },
   {
-    path: "/profile", 
+    path: "/profile/:id",
     element: <Profile />
-  },
-  {
-    path: "/login", 
+  },  {
+    path: "/login",
     element: <Login />
   },
   {
@@ -32,6 +44,7 @@ const browserRouter = createBrowserRouter([
 ])
 
 function App() {
+  useGetSocket();
   return (
     <>
       <RouterProvider router={browserRouter} />

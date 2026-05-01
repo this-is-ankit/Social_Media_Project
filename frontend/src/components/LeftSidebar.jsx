@@ -36,8 +36,16 @@ const LeftSidebar = () => {
   const sidebarHandler = (textType) => {
     if (textType === 'Logout') {
       logoutHandler();
-    } else if (textType ==='Create'){
-        createPostHandler();
+    } else if (textType === 'Create') {
+      setOpen(true);
+    } else if (textType === "Home") {
+      navigate("/");
+    } else if (textType === "Messages") {
+      navigate("/chat");
+    } else if (textType === "Explore") {
+      navigate("/explore");
+    } else if (textType === "Profile") {
+      navigate(`/profile/${user?._id}`);
     }
   }
   const sidebarItems = [

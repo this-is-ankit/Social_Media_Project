@@ -231,3 +231,32 @@ export const bookMarkPost = async (req, res) => {
         console.log(error);
     }
 }
+
+export const getExplorePosts = async (req, res) => {
+    try {
+        const userId = req.id;
+        const user = await User.findById(userId);
+        const following = user.following;
+
+        const posts = await Post.find({
+            author: { $nin: [...following, userId] }
+        })
+        .sort({ createdAt: -1 })
+        .populate({ path: 'author', select: 'username profilePicture' })
+        .populate({
+            path: 'comments',
+            sort: { createdAt: -1 },
+            populate: {
+                path: 'author',
+                select: 'username profilePicture'
+            }
+        });
+
+        return res.status(200).json({
+            posts,
+            success: true
+        });
+    } catch (error) {
+        console.log(error);
+    }
+};
