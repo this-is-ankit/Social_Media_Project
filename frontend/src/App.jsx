@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button"
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom'
 import { LogIn } from "lucide-react"
 import Home from "./components/Home"
 import Login from "./components/Login"
@@ -11,11 +11,12 @@ import Explore from "./components/Explore"
 import Search from "./components/Search"
 import Scrolls from "./components/Scrolls"
 import useGetSocket from "./Hooks/useGetSocket"
+import ProtectedRoute from "./components/ProtectedRoute"
 
 const browserRouter = createBrowserRouter([
   {
     path: "/",
-    element: <MainLayout />,
+    element: <ProtectedRoute><MainLayout /></ProtectedRoute>,
     children: [
       {
         path: '/',
@@ -50,6 +51,10 @@ const browserRouter = createBrowserRouter([
   {
     path: "/signup",
     element: <Signup />
+  },
+  {
+    path: "/register",
+    element: <Navigate to="/signup" />
   }
 
 ])

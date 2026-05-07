@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Home, Search, Heart, TrendingUp, MessageCircle, PlusSquare, LogOut, Video, Menu, User } from 'lucide-react'
+import { Home, Search, Heart, TrendingUp, MessageCircle, PlusSquare, LogOut, Video, Menu, User, LogIn } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
@@ -38,6 +38,8 @@ const LeftSidebar = () => {
   const sidebarHandler = (textType) => {
     if (textType === 'Logout') {
       logoutHandler();
+    } else if (textType === "Login") {
+      navigate("/login");
     } else if (textType === 'Create') {
       setOpen(true);
     } else if (textType === "Home") {
@@ -84,7 +86,7 @@ const LeftSidebar = () => {
         </Avatar>
       ), text: "Profile"
     },
-    { icon: <LogOut />, text: "Logout" },
+    user ? { icon: <LogOut />, text: "Logout" } : { icon: <LogIn />, text: "Login" },
   ]
 
   const SidebarContent = () => (
