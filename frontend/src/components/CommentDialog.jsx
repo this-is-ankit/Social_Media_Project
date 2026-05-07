@@ -92,7 +92,7 @@ const CommentDialog = ({ open, setOpen }) => {
               })}
             </div>
             <div className='p-4'>
-              <div className='flex items-center gap-2'>
+              <form onSubmit={(e) => { e.preventDefault(); sendMessageHandler(); }} className='flex items-center gap-2'>
                 <input
                   type="text"
                   value={text}
@@ -100,8 +100,8 @@ const CommentDialog = ({ open, setOpen }) => {
                   placeholder='Leave a comment ...'
                   className='w-full outline-none border text-sm border-gray-300 p-2 rounded '
                 />
-                <Button className='cursor-pointer hover:bg-cyan-500' disabled={!text.trim()} onClick={sendMessageHandler} variant="outline">Send</Button>
-              </div>
+                <Button type="submit" className='cursor-pointer hover:bg-cyan-500' disabled={!text.trim()} variant="outline">Send</Button>
+              </form>
             </div>
           </div>
         </div>

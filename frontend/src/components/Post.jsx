@@ -165,18 +165,18 @@ const Post = ({ post }) => {
             }
 
             <CommentDialog open={open} setOpen={setOpen} />
-            <div className='flex items-center justify-between'>
+            <form onSubmit={(e) => { e.preventDefault(); commentHandler(); }} className='flex items-center justify-between'>
                 <input
                     type='text'
                     placeholder='Add a comment...'
                     value={text}
                     onChange={changeEventHandler}
                     className='outline-none text-sm w-full'
-                />{
-                    text && <span onClick={commentHandler} className='text-[#3BADF8] cursor-pointer'>Post</span>
+                />
+                {
+                    text && <button type='submit' className='text-[#3BADF8] cursor-pointer font-semibold'>Post</button>
                 }
-
-            </div>
+            </form>
 
         </div>
 
