@@ -8,10 +8,11 @@ import { MessageCircle, User } from 'lucide-react';
 import Messages from './Messages';
 import axios from 'axios';
 import { MESSAGE_API_END_POINT } from '@/utils/constant';
+import Loader from './CustomLoader';
 
 const ChatPage = () => {
     const [textMessage, setTextMessage] = useState("");
-    const { user, suggestedUsers } = useSelector(store => store.auth);
+    const { user, suggestedUsers, loading } = useSelector(store => store.auth);
     const { selectedUser, onlineUsers } = useSelector(store => store.chat);
     const dispatch = useDispatch();
 
@@ -45,21 +46,31 @@ const ChatPage = () => {
                 <hr className='mb-4 border-gray-300' />
                 <div className='overflow-y-auto h-[80vh]'>
                     {
-                        suggestedUsers.map((suggestedUser) => {
-                            const isOnline = onlineUsers?.includes(suggestedUser?._id);
-                            return (
-                                <div key={suggestedUser?._id} onClick={() => dispatch(setSelectedUser(suggestedUser))} className='flex gap-3 items-center p-3 hover:bg-gray-50 hover:text-slate-900 dark:hover:text-black cursor-pointer'>
-                                    <Avatar className='w-14 h-14'>
-                                        <AvatarImage src={suggestedUser?.profilePicture} />
-                                        <AvatarFallback><User className="w-5 h-5 text-gray-500" /></AvatarFallback>
-                                    </Avatar>
-                                    <div className='flex flex-col'>
-                                        <span className='font-medium'>{suggestedUser?.username}</span>
-                                        <span className={`text-xs font-bold ${isOnline ? 'text-green-600' : 'text-red-600'}`}>{isOnline ? 'online' : 'offline'}</span>
-                                    </div>
-                                </div>
+                        loading ? (
+                            <div className='flex flex-col gap-2 p-3'>
+                                {[1, 2, 3, 4, 5].map((_, index) => <Loader key={index} />)}
+                            </div>
+                        ) : (
+                            suggestedUsers.length > 0 ? (
+                                suggestedUsers.map((suggestedUser) => {
+                                    const isOnline = onlineUsers?.includes(suggestedUser?._id);
+                                    return (
+                                        <div key={suggestedUser?._id} onClick={() => dispatch(setSelectedUser(suggestedUser))} className='flex gap-3 items-center p-3 hover:bg-gray-50 hover:text-slate-900 dark:hover:text-black cursor-pointer'>
+                                            <Avatar className='w-14 h-14'>
+                                                <AvatarImage src={suggestedUser?.profilePicture} />
+                                                <AvatarFallback><User className="w-5 h-5 text-gray-500" /></AvatarFallback>
+                                            </Avatar>
+                                            <div className='flex flex-col'>
+                                                <span className='font-medium'>{suggestedUser?.username}</span>
+                                                <span className={`text-xs font-bold ${isOnline ? 'text-green-600' : 'text-red-600'}`}>{isOnline ? 'online' : 'offline'}</span>
+                                            </div>
+                                        </div>
+                                    )
+                                })
+                            ) : (
+                                <div className='p-3 text-gray-500 text-center'>No users found.</div>
                             )
-                        })
+                        )
                     }
                 </div>
 

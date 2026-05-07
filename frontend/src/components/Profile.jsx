@@ -10,13 +10,14 @@ import axios from 'axios';
 import { toast } from 'sonner';
 import { updateFollowing } from '@/redux/authSlice';
 import { USER_API_END_POINT } from '@/utils/constant';
+import Loader from './CustomLoader';
 
 const Profile = () => {
     const params = useParams();
     const userId = params.id;
     useGetUserProfile(userId);
     const [open, setOpen] = useState(false);
-    const { userProfile, user } = useSelector(store => store.auth);
+    const { userProfile, user, loading } = useSelector(store => store.auth);
     const [activeTab, setActiveTab] = useState('posts');
     const dispatch = useDispatch();
 
@@ -45,10 +46,10 @@ const Profile = () => {
         }
     }
 
-    if (!userProfile) {
+    if (!userProfile || loading) {
         return (
             <div className='flex items-center justify-center h-screen'>
-                <p className='text-gray-500 font-semibold'>Loading profile...</p>
+                <Loader />
             </div>
         )
     }
