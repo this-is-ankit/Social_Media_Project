@@ -10,6 +10,7 @@ import CreatePost from './CreatePost'
 import Notifications from './Notifications'
 import { setPosts, setSelectedPost } from '@/redux/postSlice'
 import { Sheet, SheetContent, SheetTrigger } from './ui/sheet'
+import { USER_API_END_POINT } from '@/utils/constant'
 
 
 const LeftSidebar = () => {
@@ -22,7 +23,7 @@ const LeftSidebar = () => {
 
   const logoutHandler = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/api/v1/user/logout", { withCredentials: true });
+      const res = await axios.get(`${USER_API_END_POINT}/logout`, { withCredentials: true });
       if (res.data.success) {
         dispatch(setAuthUser(null));
         dispatch(setSelectedPost(null))

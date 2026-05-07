@@ -6,6 +6,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import { Link, useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
+import { USER_API_END_POINT } from "@/utils/constant";
 
 const Signup = () => {
     const [input, setInput] = useState({
@@ -23,7 +24,7 @@ const Signup = () => {
         console.log(input);
         try {
             setLoading(true);
-            const res = await axios.post("http://localhost:8000/api/v1/user/register", input, {
+            const res = await axios.post(`${USER_API_END_POINT}/register`, input, {
                 headers: {
                     'Content-Type': 'application/json'
                 },

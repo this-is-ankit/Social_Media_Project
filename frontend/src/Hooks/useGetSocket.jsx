@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { io } from "socket.io-client";
 import { setOnlineUsers, pushMessage } from "../redux/chatSlice";
 import { setNotifications } from "../redux/notificationSlice";
+import { BASE_URL } from "@/utils/constant";
 
 const useGetSocket = () => {
     const { user } = useSelector(store => store.auth);
@@ -11,7 +12,7 @@ const useGetSocket = () => {
     useEffect(() => {
         let socket;
         if (user) {
-            socket = io('http://localhost:8000', {
+            socket = io(BASE_URL, {
                 query: {
                     userId: user?._id
                 },

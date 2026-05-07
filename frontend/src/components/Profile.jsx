@@ -9,6 +9,7 @@ import EditProfile from './EditProfile';
 import axios from 'axios';
 import { toast } from 'sonner';
 import { updateFollowing } from '@/redux/authSlice';
+import { USER_API_END_POINT } from '@/utils/constant';
 
 const Profile = () => {
     const params = useParams();
@@ -32,7 +33,7 @@ const Profile = () => {
         // Optimistic UI update
         dispatch(updateFollowing(userProfile?._id));
         try {
-            const res = await axios.post(`http://localhost:8000/api/v1/user/followorunfollow/${userProfile?._id}`, {}, { withCredentials: true });
+            const res = await axios.post(`${USER_API_END_POINT}/followorunfollow/${userProfile?._id}`, {}, { withCredentials: true });
             if (res.data.success) {
                 toast.success(res.data.message);
             }

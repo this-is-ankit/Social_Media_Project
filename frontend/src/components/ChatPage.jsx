@@ -7,6 +7,7 @@ import { Button } from './ui/button';
 import { MessageCircle, User } from 'lucide-react';
 import Messages from './Messages';
 import axios from 'axios';
+import { MESSAGE_API_END_POINT } from '@/utils/constant';
 
 const ChatPage = () => {
     const [textMessage, setTextMessage] = useState("");
@@ -16,7 +17,7 @@ const ChatPage = () => {
 
     const sendMessageHandler = async (receiverId) => {
         try {
-            const res = await axios.post(`http://localhost:8000/api/v1/message/send/${receiverId}`, { message: textMessage }, {
+            const res = await axios.post(`${MESSAGE_API_END_POINT}/send/${receiverId}`, { message: textMessage }, {
                 headers: {
                     'Content-Type': 'application/json'
                 },

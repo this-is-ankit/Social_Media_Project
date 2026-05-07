@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { setPosts } from '@/redux/postSlice';
+import { POST_API_END_POINT } from '@/utils/constant';
 
 
 
@@ -40,7 +41,7 @@ const CreatePost = ({ open, setOpen }) => {
         e.preventDefault();
         try {
             setLoading(true);
-            const res = await axios.post('http://localhost:8000/api/v1/post/addpost', formData, {
+            const res = await axios.post(`${POST_API_END_POINT}/addpost`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 },

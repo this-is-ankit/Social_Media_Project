@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import { Search as SearchIcon, User } from 'lucide-react'
 import axios from 'axios'
 import { Link } from 'react-router-dom'
+import { USER_API_END_POINT } from '@/utils/constant'
 
 const Search = () => {
     const [searchQuery, setSearchQuery] = useState("");
@@ -15,7 +16,7 @@ const Search = () => {
         const delayDebounceFn = setTimeout(async () => {
             if (searchQuery) {
                 try {
-                    const res = await axios.get(`http://localhost:8000/api/v1/user/suggested`, { withCredentials: true });
+                    const res = await axios.get(`${USER_API_END_POINT}/suggested`, { withCredentials: true });
                     if (res.data.success) {
                         const filteredUsers = res.data.users.filter(user => 
                             user.username.toLowerCase().includes(searchQuery.toLowerCase())

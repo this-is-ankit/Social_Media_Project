@@ -5,6 +5,7 @@ import { Plus, User } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { toast } from 'sonner';
 import StoryViewer from './StoryViewer';
+import { STORY_API_END_POINT } from '@/utils/constant';
 
 const StoryBar = () => {
     const [stories, setStories] = useState([]);
@@ -16,7 +17,7 @@ const StoryBar = () => {
 
     const fetchStories = async () => {
         try {
-            const res = await axios.get('http://localhost:8000/api/v1/story/all', { withCredentials: true });
+            const res = await axios.get(`${STORY_API_END_POINT}/all`, { withCredentials: true });
             if (res.data.success) {
                 setStories(res.data.stories);
                 
@@ -51,7 +52,7 @@ const StoryBar = () => {
         formData.append('image', file);
 
         try {
-            const res = await axios.post('http://localhost:8000/api/v1/story/add', formData, {
+            const res = await axios.post(`${STORY_API_END_POINT}/add`, formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
                 withCredentials: true
             });

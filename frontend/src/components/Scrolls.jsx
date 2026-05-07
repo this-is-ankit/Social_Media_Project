@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setScrolls } from '@/redux/postSlice';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Heart, MessageCircle, Send, Bookmark, Music, User } from 'lucide-react';
+import { POST_API_END_POINT } from '@/utils/constant';
 
 const ScrollItem = ({ scroll }) => {
     const videoRef = useRef(null);
@@ -99,7 +100,7 @@ const Scrolls = () => {
     useEffect(() => {
         const fetchScrolls = async () => {
             try {
-                const res = await axios.get('http://localhost:8000/api/v1/post/scrolls', { withCredentials: true });
+                const res = await axios.get(`${POST_API_END_POINT}/scrolls`, { withCredentials: true });
                 if (res.data.success) {
                     dispatch(setScrolls(res.data.scrolls));
                 }

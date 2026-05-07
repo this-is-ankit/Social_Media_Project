@@ -6,6 +6,7 @@ import useGetSuggestedUsers from '@/Hooks/useGetSuggestedUsers';
 import { updateFollowing } from '@/redux/authSlice';
 import axios from 'axios';
 import { toast } from 'sonner';
+import { USER_API_END_POINT } from '@/utils/constant';
 
 import { User } from 'lucide-react';
 
@@ -17,7 +18,7 @@ const RightSidebar = () => {
     const followHandler = async (userId) => {
         dispatch(updateFollowing(userId));
         try {
-            const res = await axios.post(`http://localhost:8000/api/v1/user/followorunfollow/${userId}`, {}, { withCredentials: true });
+            const res = await axios.post(`${USER_API_END_POINT}/followorunfollow/${userId}`, {}, { withCredentials: true });
             if (res.data.success) {
                 toast.success(res.data.message);
             }

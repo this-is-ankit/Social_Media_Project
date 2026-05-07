@@ -9,6 +9,7 @@ import axios from 'axios'
 import { toast } from 'sonner'
 import { setAuthUser } from '@/redux/authSlice'
 import { Loader2 } from 'lucide-react'
+import { USER_API_END_POINT } from '@/utils/constant'
 
 const EditProfile = ({ open, setOpen }) => {
     const { user } = useSelector(store => store.auth);
@@ -38,7 +39,7 @@ const EditProfile = ({ open, setOpen }) => {
         }
         try {
             setLoading(true);
-            const res = await axios.post('http://localhost:8000/api/v1/user/profile/edit', formData, {
+            const res = await axios.post(`${USER_API_END_POINT}/profile/edit`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 },
